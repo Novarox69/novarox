@@ -1,1 +1,336 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Novarox Esport</title>
+<style>
+:root{--bg:#06040d;--c:#110b22;--c2:#1a1033;--p:#7c3aed;--p2:#a855f7;--g:#c4a1ff;--t:#eee9fb;--m:#9a90b8;--w:#22c55e;--l:#ef4444}
+*{box-sizing:border-box;margin:0;-webkit-tap-highlight-color:transparent}
+body{background:var(--bg);color:var(--t);font:500 17px/1.4 Rajdhani,system-ui,-apple-system,sans-serif;min-height:100vh;overflow-x:hidden}
+body:before{content:"";position:fixed;inset:0;z-index:-1;background:radial-gradient(600px 400px at 85% -5%,rgba(124,58,237,.38),transparent),radial-gradient(500px 400px at 0 100%,rgba(168,85,247,.22),transparent),linear-gradient(rgba(124,58,237,.06) 1px,transparent 1px) 0 0/46px 46px,linear-gradient(90deg,rgba(124,58,237,.06) 1px,transparent 1px) 0 0/46px 46px}
+h1,h2,h3,.ori{font-family:Orbitron,Rajdhani,sans-serif;text-transform:uppercase;letter-spacing:.05em}
+button,input,select{font-family:inherit}
+.mu{color:var(--m)}
+header{position:fixed;top:0;left:0;right:0;z-index:50;background:rgba(6,4,13,.86);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px);border-bottom:1px solid rgba(168,85,247,.3);padding-top:env(safe-area-inset-top)}
+.bar{display:flex;align-items:center;justify-content:space-between;height:60px;padding:0 16px;max-width:1100px;margin:auto}
+.brand{display:flex;align-items:center;gap:10px;font:800 15px Orbitron,sans-serif;letter-spacing:.06em;background:none;border:0;color:var(--t);cursor:pointer}
+.brand .lg{width:38px;height:38px}
+.lg{display:block}.lg img,.lg svg{width:100%;height:100%;object-fit:contain}
+.menu{display:flex;gap:2px}
+.menu button{background:none;border:0;color:var(--m);padding:10px 12px;font:700 15px Rajdhani,sans-serif;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;border-radius:10px;transition:.2s}
+.menu button:hover,.menu button.on{color:#fff;background:rgba(124,58,237,.3)}
+.burger{display:none;background:none;border:1px solid rgba(168,85,247,.5);color:#fff;font-size:22px;border-radius:10px;padding:2px 12px;cursor:pointer}
+@media(max-width:860px){.burger{display:block}.menu{display:none;position:absolute;top:100%;left:0;right:0;flex-direction:column;background:#0b0716;padding:8px 12px 14px;border-bottom:1px solid rgba(168,85,247,.3)}.menu.open{display:flex}.menu button{text-align:left;font-size:18px}}
+main{max-width:1100px;margin:0 auto;padding:calc(84px + env(safe-area-inset-top)) 16px 50px}
+.view{display:none}.view.active{display:block;animation:in .45s ease}
+@keyframes in{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes fl{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+@keyframes pu{0%,100%{opacity:.5}50%{opacity:1}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+h2{font-size:clamp(22px,5vw,32px);margin:6px 0 18px;color:#fff;text-shadow:0 0 18px rgba(168,85,247,.6)}
+h3{font-size:16px}
+.sec{margin-top:34px}
+.btn{background:linear-gradient(135deg,var(--p),var(--p2));color:#fff;border:0;border-radius:12px;padding:12px 20px;font:700 16px Rajdhani,sans-serif;letter-spacing:.07em;text-transform:uppercase;cursor:pointer;box-shadow:0 0 22px rgba(124,58,237,.5);transition:transform .2s,box-shadow .2s}
+.btn:hover{transform:translateY(-2px);box-shadow:0 0 30px rgba(168,85,247,.8)}
+.btn.o{background:transparent;border:1px solid var(--p2);box-shadow:none}.btn.d{background:#7f1d1d;box-shadow:none}.btn.s{padding:7px 12px;font-size:14px}
+.card{background:linear-gradient(160deg,var(--c2),var(--c));border:1px solid rgba(168,85,247,.22);border-radius:16px;padding:18px;transition:border-color .25s,box-shadow .25s,transform .25s}
+.card:hover{border-color:var(--p2);box-shadow:0 0 28px rgba(124,58,237,.3)}
+.grid{display:grid;gap:16px;grid-template-columns:repeat(auto-fill,minmax(220px,1fr))}
+.hero{text-align:center;padding:26px 8px 6px}
+.hero .lg{width:min(230px,58vw);height:min(230px,58vw);margin:0 auto;animation:fl 4.5s ease-in-out infinite;filter:drop-shadow(0 0 28px rgba(168,85,247,.85))}
+.hero h1{font-size:clamp(32px,9vw,62px);font-weight:800;background:linear-gradient(90deg,#fff,var(--g) 60%,var(--p2));-webkit-background-clip:text;background-clip:text;color:transparent;margin-top:8px}
+.hero .tag{letter-spacing:.5em;color:var(--g);font-size:14px;text-transform:uppercase;animation:pu 3s infinite}
+.hero p{max-width:560px;margin:14px auto 20px;color:var(--m);font-size:18px}
+.cta{display:flex;gap:12px;justify-content:center;flex-wrap:wrap}
+.two{display:grid;gap:16px;grid-template-columns:1fr 1fr}
+@media(max-width:760px){.two{grid-template-columns:1fr}}
+.cd4{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-top:14px}
+.cd4>div{background:#0b0716;border:1px solid rgba(168,85,247,.35);border-radius:12px;padding:10px 4px;text-align:center}
+.cd4 b{display:block;font:800 clamp(22px,6vw,32px) Orbitron,sans-serif;color:#fff;text-shadow:0 0 14px var(--p2)}
+.cd4 span{font-size:12px;color:var(--m);text-transform:uppercase;letter-spacing:.1em}
+.mr{display:grid;grid-template-columns:150px 1fr auto auto;gap:10px;align-items:center;background:linear-gradient(160deg,var(--c2),var(--c));border:1px solid rgba(168,85,247,.2);border-left:4px solid var(--p2);border-radius:14px;padding:12px 14px;margin-bottom:10px}
+.mr.win{border-left-color:var(--w)}.mr.loss{border-left-color:var(--l)}
+.mr .md{color:var(--g);font-size:15px}.mr .mf{font:700 13px Orbitron,sans-serif;color:var(--m)}
+.ms{display:flex;align-items:center;gap:10px}.sc{font:800 20px Orbitron,sans-serif}
+.ma{display:flex;gap:6px;grid-column:1/-1;justify-content:flex-end}
+.bd{font:700 12px Rajdhani,sans-serif;letter-spacing:.08em;text-transform:uppercase;padding:4px 10px;border-radius:99px;border:1px solid}
+.bd.win{color:var(--w);border-color:var(--w);background:rgba(34,197,94,.12)}.bd.loss{color:var(--l);border-color:var(--l);background:rgba(239,68,68,.12)}.bd.up{color:var(--g);border-color:var(--p2);background:rgba(124,58,237,.18)}
+@media(max-width:640px){.mr{grid-template-columns:1fr auto}.mr .md{grid-column:1/-1}.mr .mf{order:3}}
+.pc{padding:0;overflow:hidden}.pc:hover{transform:translateY(-5px)}
+.av{aspect-ratio:1;background:#0b0716;position:relative}.av img{width:100%;height:100%;object-fit:cover;display:block}
+.av:after{content:"";position:absolute;inset:0;background:linear-gradient(transparent 55%,var(--c))}
+.av0{width:100%;height:100%;display:grid;place-items:center;font:800 56px Orbitron,sans-serif;color:var(--p2);background:radial-gradient(circle,#2a1750,#0b0716)}
+.pb{padding:14px 16px 18px}.pb h3{font-size:22px;color:#fff}
+.rk{display:inline-block;margin:8px 0 6px;padding:3px 12px;border-radius:99px;background:rgba(124,58,237,.25);border:1px solid var(--p2);color:var(--g);font-weight:700;font-size:14px}
+.tabs,.fl{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px}
+.chip{background:var(--c);border:1px solid rgba(168,85,247,.4);color:var(--m);border-radius:99px;padding:8px 18px;font:700 15px Rajdhani,sans-serif;cursor:pointer}.chip.on{background:var(--p);color:#fff}
+.calh,.cal{display:grid;grid-template-columns:repeat(7,1fr);gap:5px}.calh{margin-bottom:5px;text-align:center;color:var(--m);font-size:14px}
+.cdy{aspect-ratio:1;min-height:42px;border-radius:10px;background:var(--c);border:1px solid rgba(168,85,247,.15);color:var(--t);font:600 15px Rajdhani,sans-serif;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;cursor:pointer}
+.cdy.td{border-color:var(--p2)}.cdy.sel{background:var(--p)}
+.dots{display:flex;gap:3px;height:7px}.dots i{width:7px;height:7px;border-radius:50%;background:var(--p2);box-shadow:0 0 6px var(--p2)}.dots i.win{background:var(--w)}.dots i.loss{background:var(--l)}
+.chd{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}.chd h3{font-size:18px}
+.sg{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(130px,1fr))}
+.sb{text-align:center}.sb b{display:block;font:800 34px Orbitron,sans-serif;color:#fff;text-shadow:0 0 16px var(--p2)}.sb span{color:var(--m);font-size:14px;text-transform:uppercase;letter-spacing:.1em}
+.ring{width:150px;height:150px;border-radius:50%;margin:auto;background:conic-gradient(var(--p2) calc(var(--v)*1%),#241a3d 0);display:grid;place-items:center;box-shadow:0 0 30px rgba(124,58,237,.45)}
+.ring div{width:118px;height:118px;border-radius:50%;background:var(--c);display:grid;place-items:center;font:800 28px Orbitron,sans-serif}
+.bar2{height:8px;border-radius:9px;background:#241a3d;margin:4px 0 10px;overflow:hidden}.bar2 i{display:block;height:100%;background:linear-gradient(90deg,var(--p),var(--g));border-radius:9px}
+.pr{display:flex;justify-content:space-between;font-size:15px}
+.shop .ic{aspect-ratio:1.2;display:grid;place-items:center;background:radial-gradient(circle,#2a1750,#0b0716);border-radius:12px;margin-bottom:12px}.shop .ic svg{width:62%;height:62%;filter:drop-shadow(0 0 10px rgba(168,85,247,.7))}
+.shop .btn{width:100%;margin-top:10px}
+.mod{position:fixed;inset:0;background:rgba(0,0,0,.78);display:none;align-items:center;justify-content:center;padding:16px;z-index:100;overflow:auto}.mod.open{display:flex}
+.mbx{width:100%;max-width:440px;max-height:92vh;overflow:auto;background:var(--c);border:1px solid var(--p2);border-radius:18px;padding:20px;box-shadow:0 0 40px rgba(124,58,237,.5)}.mbx h3{font-size:18px;margin-bottom:14px}
+label{display:block;color:var(--m);font-size:14px;margin-bottom:12px}
+input,select{display:block;width:100%;margin-top:5px;background:#0b0716;color:var(--t);border:1px solid rgba(168,85,247,.4);border-radius:10px;padding:11px 12px;font-size:16px}
+input:focus,select:focus{outline:2px solid var(--p2)}
+.r3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}.r2{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.fa{display:flex;gap:10px;justify-content:flex-end;margin-top:6px}
+.lgn{max-width:380px;margin:30px auto}.lgn .btn{width:100%}
+.prv{width:70px;height:70px;border-radius:12px;object-fit:cover;margin-top:8px;display:block}
+#toast{position:fixed;left:50%;bottom:calc(24px + env(safe-area-inset-bottom));transform:translate(-50%,30px);background:var(--p);color:#fff;padding:12px 22px;border-radius:99px;font-weight:700;opacity:0;pointer-events:none;transition:.3s;z-index:200;box-shadow:0 0 24px rgba(168,85,247,.7);text-align:center}#toast.show{opacity:1;transform:translate(-50%,0)}
+footer{text-align:center;color:var(--m);padding:20px 16px 40px;border-top:1px solid rgba(168,85,247,.2);font-size:15px}
+footer button{background:none;border:0;color:var(--g);cursor:pointer;font:600 15px Rajdhani,sans-serif;padding:6px 8px}
+.row{display:flex;align-items:center;gap:12px;background:var(--c);border:1px solid rgba(168,85,247,.2);border-radius:14px;padding:10px;margin-bottom:10px}.row .th{width:46px;height:46px;border-radius:10px;overflow:hidden;flex:none}.row .th .av0{font-size:20px}.row .nm{flex:1;min-width:0}.row .nm b{color:#fff}
+.set{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+</style>
+</head>
+<body>
+<header><div class="bar">
+<button class="brand" data-v="home"><span class="lg"></span>NOVAROX</button>
+<nav class="menu" id="mn">
+<button data-v="home">Accueil</button><button data-v="roster">Roster</button><button data-v="matches">Matchs</button><button data-v="cal">Calendrier</button><button data-v="stats">Stats</button><button data-v="shop">Boutique</button><button data-v="admin">Admin</button>
+</nav>
+<button class="burger" data-a="burger" aria-label="Menu">☰</button>
+</div></header>
+
+<main>
+<section class="view active" id="v-home">
+<div class="hero"><div class="lg"></div><h1>Novarox Esport</h1><div class="tag">Rise beyond limits</div>
+<p>Équipe Rocket League compétitive. Vitesse, précision et esprit d’équipe pour viser le haut du classement.</p>
+<div class="cta"><button class="btn" data-v="matches">Voir les matchs</button><button class="btn o" data-v="roster">Le roster</button><button class="btn o" data-v="shop">Boutique</button></div></div>
+<div class="two sec">
+<div class="card" id="nm"></div>
+<div class="card"><h3>Bilan de saison</h3><div class="sg" id="hs" style="margin-top:14px"></div></div>
+</div>
+<div class="sec"><h2>Derniers résultats</h2><div id="lr"></div><button class="btn o s" data-v="matches">Tous les matchs</button></div>
+</section>
+
+<section class="view" id="v-roster"><h2>Roster</h2><div class="grid" id="rs"></div></section>
+
+<section class="view" id="v-matches"><h2>Matchs</h2>
+<div class="fl" id="ff"></div>
+<h3 class="mu" style="margin-bottom:10px">À venir</h3><div id="mu"></div>
+<h3 class="mu" style="margin:22px 0 10px">Résultats</h3><div id="md"></div></section>
+
+<section class="view" id="v-cal"><h2>Calendrier</h2>
+<div class="card"><div class="chd"><button class="btn o s" data-a="cm" data-id="-1">‹</button><h3 id="cT"></h3><button class="btn o s" data-a="cm" data-id="1">›</button></div>
+<div class="calh"><span>Lun</span><span>Mar</span><span>Mer</span><span>Jeu</span><span>Ven</span><span>Sam</span><span>Dim</span></div>
+<div class="cal" id="cg"></div></div>
+<div class="sec" id="cl"></div></section>
+
+<section class="view" id="v-stats"><h2>Statistiques</h2>
+<div class="two"><div class="card"><div class="sg" id="ts"></div></div><div class="card" style="display:grid;place-items:center"><div class="ring" id="rg"><div id="rp"></div></div><p class="mu" style="margin-top:10px">Pourcentage de victoire</p></div></div>
+<h2 class="sec">Joueurs</h2><div class="grid" id="ps"></div></section>
+
+<section class="view" id="v-shop"><h2>Boutique</h2><p class="mu" style="margin:-8px 0 18px">La collection Novarox arrive bientôt. Active l’alerte pour être prévenu.</p><div class="grid shop" id="sh"></div></section>
+
+<section class="view" id="v-admin"><h2>Administration</h2><div id="ad"></div></section>
+</main>
+
+<footer><div><button data-v="home">Accueil</button><button data-v="roster">Roster</button><button data-v="matches">Matchs</button><button data-v="cal">Calendrier</button><button data-v="stats">Stats</button><button data-v="shop">Boutique</button></div>© Novarox Esport</footer>
+
+<div class="mod" id="modal" data-a="close"><div class="mbx"><h3 id="mt"></h3><div id="mb"></div></div></div>
+<div id="toast"></div>
+
+<script>
+(function(){
+'use strict';
+var KEY='novarox_v1',S,auth=false,adT='p',ff='all',sel=null,tmpImg='',tt;
+var now0=new Date(),cy=now0.getFullYear(),cm=now0.getMonth();
+var MO=['Janvier','Février','Mars','Avril','Mai','Juin','Juillet','Août','Septembre','Octobre','Novembre','Décembre'];
+var DN=['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+var RANKS=['Bronze','Silver','Gold','Platinum','Diamond','Champion I','Champion II','Champion III','Grand Champion I','Grand Champion II','Grand Champion III','Supersonic Legend'];
+var BT='<div class="fa"><button type="button" class="btn o" data-a="close">Annuler</button><button type="submit" class="btn">Enregistrer</button></div>';
+var PRODS=[{id:'j1',n:'Maillot Domicile',k:'tee',c:'#3b1a78'},{id:'j2',n:'Maillot Extérieur',k:'tee',c:'#e9ddff'},{id:'h1',n:'Hoodie Novarox',k:'tee',c:'#14102a'},{id:'c1',n:'Casquette Snapback',k:'cap',c:'#5b21b6'},{id:'m1',n:'Tapis de souris XL',k:'pad',c:'#2a1750'},{id:'t1',n:'Mug Novarox',k:'mug',c:'#7c3aed'}];
+
+function $(i){return document.getElementById(i)}
+function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
+function uid(){return Date.now().toString(36)+Math.random().toString(36).slice(2,7)}
+function pad(n){return n<10?'0'+n:''+n}
+function loc(d){return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())+'T'+pad(d.getHours())+':'+pad(d.getMinutes())}
+function pd(s){var m=String(s).match(/(\d+)-(\d+)-(\d+)T(\d+):(\d+)/);return m?new Date(+m[1],m[2]-1,+m[3],+m[4],+m[5]):new Date(NaN)}
+function fd(s){var d=pd(s);return isNaN(d)?'Date à définir':DN[d.getDay()]+' '+d.getDate()+' '+MO[d.getMonth()].slice(0,4)+'. · '+pad(d.getHours())+'h'+pad(d.getMinutes())}
+function done(m){return typeof m.sa==='number'&&typeof m.sb==='number'}
+function find(a,id){for(var i=0;i<a.length;i++)if(a[i].id===id)return a[i];return null}
+function opts(l,s){return l.map(function(x){return '<option'+(x===s?' selected':'')+'>'+esc(x)+'</option>'}).join('')}
+function toast(t){var e=$('toast');e.textContent=t;e.classList.add('show');clearTimeout(tt);tt=setTimeout(function(){e.classList.remove('show')},2400)}
+
+function seed(){
+  return{pin:'novarox',logo:'',notify:{},
+ players:[],matches:[]};
+}
+function load(){try{var r=localStorage.getItem(KEY);if(r){var o=JSON.parse(r);if(o&&o.players&&o.matches){o.notify=o.notify||{};return o}}}catch(e){}return null}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){toast('Enregistrement impossible sur cet appareil')}}
+S=load()||seed();save();
+try{auth=sessionStorage.getItem('nvx')==='1'}catch(e){}
+
+var LOGO='<svg viewBox="0 0 100 100"><polygon points="50,4 92,28 92,72 50,96 8,72 8,28" fill="#0d0820" stroke="#a855f7" stroke-width="3"/><text x="50" y="63" text-anchor="middle" font-family="Orbitron,Arial,sans-serif" font-weight="900" font-style="italic" font-size="34" fill="#e9ddff" stroke="#7c3aed" stroke-width="1">NR</text></svg>';
+function logos(){var h=S.logo?'<img alt="Novarox" src="'+esc(S.logo)+'">':LOGO,l=document.querySelectorAll('.lg');for(var i=0;i<l.length;i++)l[i].innerHTML=h}
+function avatar(p){return p.img?'<img alt="" src="'+esc(p.img)+'">':'<div class="av0">'+esc(p.name.charAt(0).toUpperCase())+'</div>'}
+
+function upcoming(){return S.matches.filter(function(m){return !done(m)}).sort(function(a,b){return a.date<b.date?-1:1})}
+function finished(){return S.matches.filter(done).sort(function(a,b){return a.date<b.date?1:-1})}
+function next(){var n=new Date(),u=upcoming().filter(function(m){return pd(m.date)>n});return u[0]||null}
+function mrow(m,adm){
+ var dn=done(m),r=dn?(m.sa>m.sb?'win':'loss'):'';
+ return '<div class="mr '+r+'"><div class="md">'+fd(m.date)+'</div><div><b>NOVAROX</b> <span class="mu">vs</span> '+esc(m.opp)+'</div><div class="mf">'+esc(m.fmt)+'</div><div class="ms">'+(dn?'<span class="sc">'+m.sa+' - '+m.sb+'</span><span class="bd '+r+'">'+(r==='win'?'Victoire':'Défaite')+'</span>':'<span class="bd up">'+(pd(m.date)<new Date()?'Score à saisir':'À venir')+'</span>')+'</div>'+(adm?'<div class="ma"><button class="btn s o" data-a="em" data-id="'+m.id+'">Modifier</button><button class="btn s d" data-a="dm" data-id="'+m.id+'">Supprimer</button></div>':'')+'</div>'
+}
+function sbox(n,l){return '<div class="sb"><b>'+n+'</b><span>'+l+'</span></div>'}
+function tstats(){var f=finished(),w=f.filter(function(m){return m.sa>m.sb}).length;return{p:f.length,w:w,l:f.length-w,pc:f.length?Math.round(w/f.length*100):0}}
+
+function rHome(){
+ var nx=next();
+ $('nm').innerHTML=nx?'<h3 class="mu">Prochain match</h3><h2 style="margin:8px 0 4px;font-size:clamp(20px,5vw,28px)">Novarox vs '+esc(nx.opp)+'</h2><p class="mu">'+fd(nx.date)+' · '+esc(nx.fmt)+'</p><div class="cd4" id="cdn"></div>':'<h3 class="mu">Prochain match</h3><h2 style="margin-top:8px">Aucun match programmé</h2><p class="mu">Les prochains matchs apparaîtront ici.</p>';
+ var t=tstats();$('hs').innerHTML=sbox(t.p,'Joués')+sbox(t.w,'Victoires')+sbox(t.l,'Défaites')+sbox(t.pc+'%','Victoires');
+ var f=finished().slice(0,3);$('lr').innerHTML=f.length?f.map(function(m){return mrow(m)}).join(''):'<p class="mu">Aucun résultat pour le moment.</p>';
+ tick();
+}
+function tick(){
+ var e=$('cdn');if(!e)return;var nx=next();if(!nx)return;
+ var s=Math.floor((pd(nx.date)-new Date())/1000);
+ if(s<=0){e.innerHTML='<div style="grid-column:1/-1"><b>C’est l’heure !</b></div>';return}
+ var d=Math.floor(s/86400),h=Math.floor(s%86400/3600),m=Math.floor(s%3600/60),x=s%60;
+ e.innerHTML='<div><b>'+d+'</b><span>Jours</span></div><div><b>'+pad(h)+'</b><span>Heures</span></div><div><b>'+pad(m)+'</b><span>Min</span></div><div><b>'+pad(x)+'</b><span>Sec</span></div>';
+}
+function rRoster(){
+ $('rs').innerHTML=S.players.length?S.players.map(function(p){return '<div class="card pc"><div class="av">'+avatar(p)+'</div><div class="pb"><h3>'+esc(p.name)+'</h3><span class="rk">'+esc(p.rank)+'</span><div class="mu">'+esc(p.role)+'</div></div></div>'}).join(''):'<p class="mu">Aucun joueur. Ajoutes-en depuis l’administration.</p>';
+}
+function rMatches(){
+ var fs=['all','1v1','2v2','3v3'];
+ $('ff').innerHTML=fs.map(function(f){return '<button class="chip'+(ff===f?' on':'')+'" data-a="ff" data-id="'+f+'">'+(f==='all'?'Tous':f)+'</button>'}).join('');
+ function ok(m){return ff==='all'||m.fmt===ff}
+ var u=upcoming().filter(ok),d=finished().filter(ok);
+ $('mu').innerHTML=u.length?u.map(function(m){return mrow(m)}).join(''):'<p class="mu">Aucun match à venir.</p>';
+ $('md').innerHTML=d.length?d.map(function(m){return mrow(m)}).join(''):'<p class="mu">Aucun résultat.</p>';
+}
+function rCal(){
+ var off=(new Date(cy,cm,1).getDay()+6)%7,dim=new Date(cy,cm+1,0).getDate(),h='',i,td=loc(new Date()).slice(0,10);
+ for(i=0;i<off;i++)h+='<span></span>';
+ for(i=1;i<=dim;i++){
+  var k=cy+'-'+pad(cm+1)+'-'+pad(i),ms=S.matches.filter(function(m){return m.date.slice(0,10)===k});
+  h+='<button class="cdy'+(k===td?' td':'')+(k===sel?' sel':'')+'" data-a="day" data-id="'+k+'">'+i+'<span class="dots">'+ms.map(function(m){return '<i class="'+(done(m)?(m.sa>m.sb?'win':'loss'):'')+'"></i>'}).join('')+'</span></button>';
+ }
+ $('cg').innerHTML=h;$('cT').textContent=MO[cm]+' '+cy;
+ var pre=cy+'-'+pad(cm+1),l=S.matches.filter(function(m){return sel?m.date.slice(0,10)===sel:m.date.slice(0,7)===pre}).sort(function(a,b){return a.date<b.date?-1:1});
+ var t=sel?'Matchs du '+pd(sel+'T00:00').getDate()+' '+MO[cm].toLowerCase():'Matchs de '+MO[cm].toLowerCase();
+ $('cl').innerHTML='<h3 class="mu" style="margin-bottom:10px">'+t+'</h3>'+(l.length?l.map(function(m){return mrow(m,auth)}).join(''):'<p class="mu">Aucun match.</p>')+(auth&&sel?'<button class="btn s" data-a="addday">Ajouter un match ce jour</button>':'');
+}
+function rStats(){
+ var t=tstats(),f=finished(),gf=0,ga=0;f.forEach(function(m){gf+=m.sa;ga+=m.sb});
+ $('ts').innerHTML=sbox(t.p,'Matchs joués')+sbox(t.w,'Victoires')+sbox(t.l,'Défaites')+sbox(gf+' / '+ga,'Buts pour / contre');
+ $('rg').style.setProperty('--v',t.pc);$('rp').textContent=t.pc+'%';
+ var mx=1;S.players.forEach(function(p){mx=Math.max(mx,p.g,p.a,p.s)});
+ function ln(l,v){return '<div class="pr"><span>'+l+'</span><b>'+v+'</b></div><div class="bar2"><i style="width:'+Math.round(v/mx*100)+'%"></i></div>'}
+ $('ps').innerHTML=S.players.slice().sort(function(a,b){return b.g-a.g}).map(function(p){return '<div class="card"><h3>'+esc(p.name)+'</h3><div class="mu" style="margin-bottom:10px">'+esc(p.rank)+'</div>'+ln('Buts',p.g)+ln('Passes décisives',p.a)+ln('Arrêts',p.s)+'</div>'}).join('')||'<p class="mu">Aucun joueur.</p>';
+}
+function icon(p){
+ var s='stroke="#a855f7" stroke-width="2"',b=p.k==='tee'?'<path d="M30 12 L8 28 L19 42 L28 36 V88 H72 V36 L81 42 L92 28 L70 12 Q50 28 30 12Z" fill="'+p.c+'" '+s+'/><text x="50" y="62" text-anchor="middle" font-family="Orbitron,Arial" font-weight="900" font-size="18" fill="#a855f7">NR</text>':
+ p.k==='cap'?'<path d="M14 62 Q14 24 50 24 Q86 24 86 62Z" fill="'+p.c+'" '+s+'/><path d="M58 62 H96 V70 H58Z" fill="'+p.c+'" '+s+'/>':
+ p.k==='mug'?'<rect x="22" y="26" width="46" height="52" rx="6" fill="'+p.c+'" '+s+'/><path d="M68 38 H80 Q86 38 86 46 V56 Q86 64 78 64 H68" fill="none" '+s+'/>':
+ '<rect x="8" y="26" width="84" height="48" rx="10" fill="'+p.c+'" '+s+'/><text x="50" y="58" text-anchor="middle" font-family="Orbitron,Arial" font-weight="900" font-size="18" fill="#a855f7">NR</text>';
+ return '<svg viewBox="0 0 100 100">'+b+'</svg>';
+}
+function rShop(){
+ $('sh').innerHTML=PRODS.map(function(p){var on=S.notify[p.id];return '<div class="card"><div class="ic">'+icon(p)+'</div><h3>'+esc(p.n)+'</h3><p class="mu">Collection Novarox · Bientôt disponible</p><button class="btn'+(on?'':' o')+'" data-a="nt" data-id="'+p.id+'">'+(on?'Alerte activée ✓':'Me prévenir')+'</button></div>'}).join('');
+}
+function rAdmin(){
+ var el=$('ad'),h;
+ if(!auth){el.innerHTML='<form id="lf" class="card lgn"><h3 style="margin-bottom:14px">Accès administrateur</h3><label>Code d’accès<input type="password" name="pw" autocomplete="off" required></label><button class="btn" type="submit">Connexion</button></form>';return}
+ h='<div class="tabs">'+[['p','Joueurs'],['m','Matchs'],['s','Réglages']].map(function(t){return '<button class="chip'+(adT===t[0]?' on':'')+'" data-a="tab" data-id="'+t[0]+'">'+t[1]+'</button>'}).join('')+'</div>';
+ if(adT==='p'){
+  h+='<button class="btn" data-a="ap" style="margin-bottom:14px">Ajouter un joueur</button>'+(S.players.map(function(p){return '<div class="row"><div class="th">'+avatar(p)+'</div><div class="nm"><b>'+esc(p.name)+'</b><div class="mu">'+esc(p.rank)+'</div></div><button class="btn s o" data-a="ep" data-id="'+p.id+'">Modifier</button><button class="btn s d" data-a="dp" data-id="'+p.id+'">Suppr.</button></div>'}).join('')||'<p class="mu">Aucun joueur.</p>');
+ }else if(adT==='m'){
+  h+='<div class="set" style="margin:0 0 14px"><button class="btn" data-a="am">Ajouter un match</button><button class="btn o" data-v="cal">Ouvrir le calendrier</button></div>'+(S.matches.slice().sort(function(a,b){return a.date<b.date?1:-1}).map(function(m){return mrow(m,true)}).join('')||'<p class="mu">Aucun match.</p>');
+ }else{
+  h+='<div class="card"><h3>Logo de l’équipe</h3><div class="lg" style="width:80px;height:80px;margin:12px 0"></div><label>Importer une image<input type="file" id="logof" accept="image/*"></label><div class="set"><button class="btn s o" data-a="rlogo">Revenir au logo par défaut</button></div></div><div class="card" style="margin-top:14px"><h3>Sécurité et données</h3><div class="set"><button class="btn s o" data-a="pin">Changer le code</button><button class="btn s d" data-a="reset">Tout effacer</button><button class="btn s" data-a="logout">Se déconnecter</button></div></div>';
+ }
+ el.innerHTML=h;logos();
+}
+function renderAll(){logos();rHome();rRoster();rMatches();rCal();rStats();rShop();rAdmin()}
+
+function modal(t,h,cb){$('mt').textContent=t;$('mb').innerHTML='<form id="mf">'+h+'</form>';$('modal').classList.add('open');$('mf').onsubmit=function(e){e.preventDefault();if(cb(this)!==false)closeM()}}
+function closeM(){$('modal').classList.remove('open')}
+function confirmM(msg,fn){modal('Confirmation','<p style="margin-bottom:16px">'+esc(msg)+'</p><div class="fa"><button type="button" class="btn o" data-a="close">Annuler</button><button type="submit" class="btn d">Supprimer</button></div>',function(){fn()})}
+function readImg(file,size,type,cb){var fr=new FileReader();fr.onload=function(){var im=new Image();im.onload=function(){var c=document.createElement('canvas');c.width=c.height=size;var x=c.getContext('2d'),s=Math.min(im.width,im.height);x.drawImage(im,(im.width-s)/2,(im.height-s)/2,s,s,0,0,size,size);cb(c.toDataURL(type,.82))};im.onerror=function(){toast('Image illisible')};im.src=fr.result};fr.onerror=function(){toast('Fichier illisible')};fr.readAsDataURL(file)}
+
+function pForm(id){
+ var p=id?find(S.players,id):null;tmpImg=p?p.img:'';
+ modal(p?'Modifier le joueur':'Ajouter un joueur','<label>Pseudo<input name="name" required maxlength="20" value="'+esc(p?p.name:'')+'"></label><label>Rang Rocket League<select name="rank">'+opts(RANKS,p?p.rank:'Champion I')+'</select></label><label>Rôle ou niveau<input name="role" maxlength="30" placeholder="Capitaine · Attaquant" value="'+esc(p?p.role:'')+'"></label><div class="r3"><label>Buts<input name="g" type="number" min="0" inputmode="numeric" value="'+(p?p.g:0)+'"></label><label>Passes<input name="a" type="number" min="0" inputmode="numeric" value="'+(p?p.a:0)+'"></label><label>Arrêts<input name="s" type="number" min="0" inputmode="numeric" value="'+(p?p.s:0)+'"></label></div><label>Photo de profil<input type="file" id="pf" accept="image/*"></label><img class="prv" id="pp" alt="" style="'+(tmpImg?'':'display:none')+'" src="'+esc(tmpImg)+'">'+BT,function(f){
+  var n=f.elements.name.value.trim();if(!n){toast('Pseudo requis');return false}
+  var r={name:n,rank:f.elements.rank.value,role:f.elements.role.value.trim()||'Joueur',img:tmpImg,g:Math.max(0,+f.elements.g.value||0),a:Math.max(0,+f.elements.a.value||0),s:Math.max(0,+f.elements.s.value||0)};
+  if(p)Object.assign(p,r);else{r.id=uid();S.players.push(r)}
+  save();renderAll();toast('Joueur enregistré ✓');
+ });
+}
+function mForm(id,dt){
+ var m=id?find(S.matches,id):null;
+ modal(m?'Modifier le match':'Ajouter un match','<label>Adversaire<input name="opp" required maxlength="30" value="'+esc(m?m.opp:'')+'"></label><label>Date et heure<input type="datetime-local" name="date" required value="'+esc(m?m.date:(dt||''))+'"></label><label>Format<select name="fmt">'+opts(['1v1','2v2','3v3'],m?m.fmt:'3v3')+'</select></label><div class="r2"><label>Score Novarox<input name="sa" type="number" min="0" max="99" inputmode="numeric" value="'+(m&&done(m)?m.sa:'')+'"></label><label>Score adversaire<input name="sb" type="number" min="0" max="99" inputmode="numeric" value="'+(m&&done(m)?m.sb:'')+'"></label></div><p class="mu" style="margin-bottom:12px">Laisse les scores vides pour un match à venir.</p>'+BT,function(f){
+  var o=f.elements.opp.value.trim(),d=f.elements.date.value,a=f.elements.sa.value,b=f.elements.sb.value;
+  if(!o||!d){toast('Adversaire et date requis');return false}
+  if((a===''&&b!=='')||(a!==''&&b==='')){toast('Renseigne les deux scores');return false}
+  if(a!==''&&+a===+b){toast('Pas de match nul en Rocket League');return false}
+  var r={opp:o,date:d.slice(0,16),fmt:f.elements.fmt.value,sa:a===''?null:+a,sb:b===''?null:+b};
+  if(m)Object.assign(m,r);else{r.id=uid();S.matches.push(r)}
+  save();renderAll();toast('Match enregistré ✓');
+ });
+}
+
+function act(a,id,t){
+ if(a==='close'){if(t.id==='modal'&&t!==window.__ev)return;closeM();return}
+ if(a==='burger'){$('mn').classList.toggle('open');return}
+ if(a==='cm'){cm+=+id;if(cm<0){cm=11;cy--}if(cm>11){cm=0;cy++}sel=null;rCal();return}
+ if(a==='day'){sel=sel===id?null:id;rCal();return}
+ if(a==='ff'){ff=id;rMatches();return}
+ if(a==='nt'){S.notify[id]=!S.notify[id];save();rShop();toast(S.notify[id]?'Alerte activée ✓':'Alerte désactivée');return}
+ if(a==='tab'){adT=id;rAdmin();return}
+ if(!auth){show('admin');return}
+ if(a==='logout'){auth=false;try{sessionStorage.removeItem('nvx')}catch(e){}renderAll();toast('Déconnecté');return}
+ if(a==='ap')pForm();
+ else if(a==='ep')pForm(id);
+ else if(a==='dp'){var p=find(S.players,id);if(p)confirmM('Supprimer le joueur '+p.name+' ?',function(){S.players=S.players.filter(function(x){return x.id!==id});save();renderAll();toast('Joueur supprimé')})}
+ else if(a==='am')mForm();
+ else if(a==='addday')mForm(null,sel+'T20:00');
+ else if(a==='em')mForm(id);
+ else if(a==='dm'){var m=find(S.matches,id);if(m)confirmM('Supprimer le match contre '+m.opp+' ?',function(){S.matches=S.matches.filter(function(x){return x.id!==id});save();renderAll();toast('Match supprimé')})}
+ else if(a==='rlogo'){S.logo='';save();renderAll();toast('Logo par défaut')}
+ else if(a==='pin')modal('Changer le code','<label>Nouveau code (4 caractères minimum)<input name="pin" type="password" required minlength="4" autocomplete="off"></label>'+BT,function(f){var v=f.elements.pin.value;if(v.length<4){toast('Code trop court');return false}S.pin=v;save();toast('Code modifié ✓')});
+ else if(a==='reset')confirmM('Effacer tous les joueurs et tous les matchs ? Cette action est définitive.',function(){S=seed();save();renderAll();toast('Données effacées')});
+}
+function show(v){
+ ['home','roster','matches','cal','stats','shop','admin'].forEach(function(n){$('v-'+n).classList.toggle('active',n===v)});
+ var b=document.querySelectorAll('.menu button');for(var i=0;i<b.length;i++)b[i].classList.toggle('on',b[i].getAttribute('data-v')===v);
+ $('mn').classList.remove('open');if(v==='admin')rAdmin();if(v==='cal')rCal();
+ window.scrollTo(0,0);
+}
+
+document.addEventListener('click',function(e){
+ var t=e.target.closest?e.target.closest('[data-v],[data-a]'):null;if(!t)return;
+ if(t.getAttribute('data-v')){show(t.getAttribute('data-v'));return}
+ window.__ev=e.target;act(t.getAttribute('data-a'),t.getAttribute('data-id'),t);
+});
+document.addEventListener('submit',function(e){
+ if(e.target.id==='lf'){e.preventDefault();var v=e.target.elements.pw.value;
+  if(v===S.pin){auth=true;try{sessionStorage.setItem('nvx','1')}catch(x){}renderAll();toast('Connecté ✓')}else toast('Code incorrect')}
+});
+document.addEventListener('change',function(e){
+ var f=e.target.files&&e.target.files[0];if(!f)return;
+ if(e.target.id==='pf')readImg(f,240,'image/jpeg',function(u){tmpImg=u;var p=$('pp');if(p){p.src=u;p.style.display='block'}});
+ else if(e.target.id==='logof')readImg(f,256,'image/png',function(u){S.logo=u;save();renderAll();toast('Logo mis à jour ✓')});
+});
+setInterval(tick,1000);
+renderAll();
+})();
+</script>
+</body>
+</html>
 
