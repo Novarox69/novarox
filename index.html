@@ -3,6 +3,9 @@
 <head>
 <meta charset="utf-8">
 <meta name="google-site-verification" content="FikobJWr602MT8FnGdsN24qJ0rk7e0tiLtnQlNNNZdI" />
+<meta name="description" content="Novarox Esport : équipe Rocket League compétitive. Roster, matchs, calendrier et statistiques.">
+<meta property="og:title" content="Novarox Esport">
+<meta property="og:description" content="Équipe Rocket League compétitive : roster, matchs, calendrier et stats.">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Novarox Esport</title>
 <style>
@@ -143,7 +146,10 @@ footer button{background:none;border:0;color:var(--g);cursor:pointer;font:600 15
 <div class="mod" id="modal" data-a="close"><div class="mbx"><h3 id="mt"></h3><div id="mb"></div></div></div>
 <div id="toast"></div>
 
-<script>
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {getFirestore,collection,doc,setDoc,deleteDoc,onSnapshot} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+import {getAuth,onAuthStateChanged,signInWithEmailAndPassword,signOut} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 (function(){
 'use strict';
 var KEY='novarox_v1',S,auth=false,adT='p',ff='all',sel=null,tmpImg='',tt;
@@ -166,14 +172,19 @@ function find(a,id){for(var i=0;i<a.length;i++)if(a[i].id===id)return a[i];retur
 function opts(l,s){return l.map(function(x){return '<option'+(x===s?' selected':'')+'>'+esc(x)+'</option>'}).join('')}
 function toast(t){var e=$('toast');e.textContent=t;e.classList.add('show');clearTimeout(tt);tt=setTimeout(function(){e.classList.remove('show')},2400)}
 
-function seed(){
-  return{pin:'novarox',logo:'',notify:{},
- players:[],matches:[]};
-}
-function load(){try{var r=localStorage.getItem(KEY);if(r){var o=JSON.parse(r);if(o&&o.players&&o.matches){o.notify=o.notify||{};return o}}}catch(e){}return null}
-function save(){try{localStorage.setItem(KEY,JSON.stringify(S))}catch(e){toast('Enregistrement impossible sur cet appareil')}}
-S=load()||seed();save();
-try{auth=sessionStorage.getItem('nvx')==='1'}catch(e){}
+var CFG={apiKey:"AIzaSyCy5zYkbjhcz35N_YemK91qYP9vVJq-ojw",authDomain:"novarox-d0dfd.firebaseapp.com",projectId:"novarox-d0dfd",storageBucket:"novarox-d0dfd.firebasestorage.app",messagingSenderId:"852740387366",appId:"1:852740387366:web:d15f1e609302c26747ece7"};
+var ADMIN='8nTEby49VgMsEDFuIedsSATne642';
+var fapp=initializeApp(CFG),db=getFirestore(fapp),au=getAuth(fapp);
+S={logo:'',players:[],matches:[],notify:{}};
+try{S.notify=JSON.parse(localStorage.getItem('nvx_notify')||'{}')}catch(e){}
+function save(){try{localStorage.setItem('nvx_notify',JSON.stringify(S.notify))}catch(e){}}
+function wr(p){return p.catch(function(e){toast(e&&e.code==='permission-denied'?'Accès refusé (règles ou connexion)':'Enregistrement impossible')})}
+function put(c,o){var d={};for(var k in o)if(k!=='id')d[k]=o[k];return wr(setDoc(doc(db,c,o.id),d))}
+function del(c,id){return wr(deleteDoc(doc(db,c,id)))}
+function watch(c,key){onSnapshot(collection(db,c),function(q){S[key]=q.docs.map(function(d){var o=d.data();o.id=d.id;return o});renderAll()},function(){toast('Connexion à la base impossible')})}
+watch('players','players');watch('matches','matches');
+onSnapshot(doc(db,'meta','site'),function(d){S.logo=d.exists()?(d.data().logo||''):'';renderAll()},function(){});
+onAuthStateChanged(au,function(u){auth=!!u&&u.uid===ADMIN;renderAll()});
 
 var LOGO='<svg viewBox="0 0 100 100"><polygon points="50,4 92,28 92,72 50,96 8,72 8,28" fill="#0d0820" stroke="#a855f7" stroke-width="3"/><text x="50" y="63" text-anchor="middle" font-family="Orbitron,Arial,sans-serif" font-weight="900" font-style="italic" font-size="34" fill="#e9ddff" stroke="#7c3aed" stroke-width="1">NR</text></svg>';
 function logos(){var h=S.logo?'<img alt="Novarox" src="'+esc(S.logo)+'">':LOGO,l=document.querySelectorAll('.lg');for(var i=0;i<l.length;i++)l[i].innerHTML=h}
@@ -204,7 +215,7 @@ function tick(){
  e.innerHTML='<div><b>'+d+'</b><span>Jours</span></div><div><b>'+pad(h)+'</b><span>Heures</span></div><div><b>'+pad(m)+'</b><span>Min</span></div><div><b>'+pad(x)+'</b><span>Sec</span></div>';
 }
 function rRoster(){
- $('rs').innerHTML=S.players.length?S.players.map(function(p){return '<div class="card pc"><div class="av">'+avatar(p)+'</div><div class="pb"><h3>'+esc(p.name)+'</h3><span class="rk">'+esc(p.rank)+'</span><div class="mu">'+esc(p.role)+'</div></div></div>'}).join(''):'<p class="mu">Aucun joueur. Ajoutes-en depuis l’administration.</p>';
+ $('rs').innerHTML=S.players.length?S.players.map(function(p){return '<div class="card pc"><div class="av">'+avatar(p)+'</div><div class="pb"><h3>'+esc(p.name)+'</h3><span class="rk">'+esc(p.rank)+'</span><div class="mu">'+esc(p.role)+'</div></div></div>'}).join(''):'<p class="mu">Le roster sera bientôt dévoilé.</p>';
 }
 function rMatches(){
  var fs=['all','1v1','2v2','3v3'];
@@ -246,14 +257,14 @@ function rShop(){
 }
 function rAdmin(){
  var el=$('ad'),h;
- if(!auth){el.innerHTML='<form id="lf" class="card lgn"><h3 style="margin-bottom:14px">Accès administrateur</h3><label>Code d’accès<input type="password" name="pw" autocomplete="off" required></label><button class="btn" type="submit">Connexion</button></form>';return}
+ if(!auth){el.innerHTML='<form id="lf" class="card lgn"><h3 style="margin-bottom:14px">Accès administrateur</h3><label>E-mail<input type="email" name="em" autocomplete="username" required></label><label>Mot de passe<input type="password" name="pw" autocomplete="current-password" required></label><button class="btn" type="submit">Connexion</button></form>';return}
  h='<div class="tabs">'+[['p','Joueurs'],['m','Matchs'],['s','Réglages']].map(function(t){return '<button class="chip'+(adT===t[0]?' on':'')+'" data-a="tab" data-id="'+t[0]+'">'+t[1]+'</button>'}).join('')+'</div>';
  if(adT==='p'){
   h+='<button class="btn" data-a="ap" style="margin-bottom:14px">Ajouter un joueur</button>'+(S.players.map(function(p){return '<div class="row"><div class="th">'+avatar(p)+'</div><div class="nm"><b>'+esc(p.name)+'</b><div class="mu">'+esc(p.rank)+'</div></div><button class="btn s o" data-a="ep" data-id="'+p.id+'">Modifier</button><button class="btn s d" data-a="dp" data-id="'+p.id+'">Suppr.</button></div>'}).join('')||'<p class="mu">Aucun joueur.</p>');
  }else if(adT==='m'){
   h+='<div class="set" style="margin:0 0 14px"><button class="btn" data-a="am">Ajouter un match</button><button class="btn o" data-v="cal">Ouvrir le calendrier</button></div>'+(S.matches.slice().sort(function(a,b){return a.date<b.date?1:-1}).map(function(m){return mrow(m,true)}).join('')||'<p class="mu">Aucun match.</p>');
  }else{
-  h+='<div class="card"><h3>Logo de l’équipe</h3><div class="lg" style="width:80px;height:80px;margin:12px 0"></div><label>Importer une image<input type="file" id="logof" accept="image/*"></label><div class="set"><button class="btn s o" data-a="rlogo">Revenir au logo par défaut</button></div></div><div class="card" style="margin-top:14px"><h3>Sécurité et données</h3><div class="set"><button class="btn s o" data-a="pin">Changer le code</button><button class="btn s d" data-a="reset">Tout effacer</button><button class="btn s" data-a="logout">Se déconnecter</button></div></div>';
+  h+='<div class="card"><h3>Logo de l’équipe</h3><div class="lg" style="width:80px;height:80px;margin:12px 0"></div><label>Importer une image<input type="file" id="logof" accept="image/*"></label><div class="set"><button class="btn s o" data-a="rlogo">Revenir au logo par défaut</button></div></div><div class="card" style="margin-top:14px"><h3>Sécurité et données</h3><div class="set"><button class="btn s d" data-a="reset">Tout effacer</button><button class="btn s" data-a="logout">Se déconnecter</button></div></div>';
  }
  el.innerHTML=h;logos();
 }
@@ -269,8 +280,7 @@ function pForm(id){
  modal(p?'Modifier le joueur':'Ajouter un joueur','<label>Pseudo<input name="name" required maxlength="20" value="'+esc(p?p.name:'')+'"></label><label>Rang Rocket League<select name="rank">'+opts(RANKS,p?p.rank:'Champion I')+'</select></label><label>Rôle ou niveau<input name="role" maxlength="30" placeholder="Capitaine · Attaquant" value="'+esc(p?p.role:'')+'"></label><div class="r3"><label>Buts<input name="g" type="number" min="0" inputmode="numeric" value="'+(p?p.g:0)+'"></label><label>Passes<input name="a" type="number" min="0" inputmode="numeric" value="'+(p?p.a:0)+'"></label><label>Arrêts<input name="s" type="number" min="0" inputmode="numeric" value="'+(p?p.s:0)+'"></label></div><label>Photo de profil<input type="file" id="pf" accept="image/*"></label><img class="prv" id="pp" alt="" style="'+(tmpImg?'':'display:none')+'" src="'+esc(tmpImg)+'">'+BT,function(f){
   var n=f.elements.name.value.trim();if(!n){toast('Pseudo requis');return false}
   var r={name:n,rank:f.elements.rank.value,role:f.elements.role.value.trim()||'Joueur',img:tmpImg,g:Math.max(0,+f.elements.g.value||0),a:Math.max(0,+f.elements.a.value||0),s:Math.max(0,+f.elements.s.value||0)};
-  if(p)Object.assign(p,r);else{r.id=uid();S.players.push(r)}
-  save();renderAll();toast('Joueur enregistré ✓');
+  r.id=p?p.id:uid();put('players',r);toast('Joueur enregistré ✓');
  });
 }
 function mForm(id,dt){
@@ -281,8 +291,7 @@ function mForm(id,dt){
   if((a===''&&b!=='')||(a!==''&&b==='')){toast('Renseigne les deux scores');return false}
   if(a!==''&&+a===+b){toast('Pas de match nul en Rocket League');return false}
   var r={opp:o,date:d.slice(0,16),fmt:f.elements.fmt.value,sa:a===''?null:+a,sb:b===''?null:+b};
-  if(m)Object.assign(m,r);else{r.id=uid();S.matches.push(r)}
-  save();renderAll();toast('Match enregistré ✓');
+  r.id=m?m.id:uid();put('matches',r);toast('Match enregistré ✓');
  });
 }
 
@@ -295,17 +304,16 @@ function act(a,id,t){
  if(a==='nt'){S.notify[id]=!S.notify[id];save();rShop();toast(S.notify[id]?'Alerte activée ✓':'Alerte désactivée');return}
  if(a==='tab'){adT=id;rAdmin();return}
  if(!auth){show('admin');return}
- if(a==='logout'){auth=false;try{sessionStorage.removeItem('nvx')}catch(e){}renderAll();toast('Déconnecté');return}
+ if(a==='logout'){signOut(au);toast('Déconnecté');return}
  if(a==='ap')pForm();
  else if(a==='ep')pForm(id);
- else if(a==='dp'){var p=find(S.players,id);if(p)confirmM('Supprimer le joueur '+p.name+' ?',function(){S.players=S.players.filter(function(x){return x.id!==id});save();renderAll();toast('Joueur supprimé')})}
+ else if(a==='dp'){var p=find(S.players,id);if(p)confirmM('Supprimer le joueur '+p.name+' ?',function(){del('players',id);toast('Joueur supprimé')})}
  else if(a==='am')mForm();
  else if(a==='addday')mForm(null,sel+'T20:00');
  else if(a==='em')mForm(id);
- else if(a==='dm'){var m=find(S.matches,id);if(m)confirmM('Supprimer le match contre '+m.opp+' ?',function(){S.matches=S.matches.filter(function(x){return x.id!==id});save();renderAll();toast('Match supprimé')})}
- else if(a==='rlogo'){S.logo='';save();renderAll();toast('Logo par défaut')}
- else if(a==='pin')modal('Changer le code','<label>Nouveau code (4 caractères minimum)<input name="pin" type="password" required minlength="4" autocomplete="off"></label>'+BT,function(f){var v=f.elements.pin.value;if(v.length<4){toast('Code trop court');return false}S.pin=v;save();toast('Code modifié ✓')});
- else if(a==='reset')confirmM('Effacer tous les joueurs et tous les matchs ? Cette action est définitive.',function(){S=seed();save();renderAll();toast('Données effacées')});
+ else if(a==='dm'){var m=find(S.matches,id);if(m)confirmM('Supprimer le match contre '+m.opp+' ?',function(){del('matches',id);toast('Match supprimé')})}
+ else if(a==='rlogo'){wr(setDoc(doc(db,'meta','site'),{logo:''}));toast('Logo par défaut')}
+ else if(a==='reset')confirmM('Effacer tous les joueurs et tous les matchs ? Cette action est définitive.',function(){S.players.forEach(function(x){del('players',x.id)});S.matches.forEach(function(x){del('matches',x.id)});toast('Données effacées')});
 }
 function show(v){
  ['home','roster','matches','cal','stats','shop','admin'].forEach(function(n){$('v-'+n).classList.toggle('active',n===v)});
@@ -320,13 +328,12 @@ document.addEventListener('click',function(e){
  window.__ev=e.target;act(t.getAttribute('data-a'),t.getAttribute('data-id'),t);
 });
 document.addEventListener('submit',function(e){
- if(e.target.id==='lf'){e.preventDefault();var v=e.target.elements.pw.value;
-  if(v===S.pin){auth=true;try{sessionStorage.setItem('nvx','1')}catch(x){}renderAll();toast('Connecté ✓')}else toast('Code incorrect')}
+ if(e.target.id==='lf'){e.preventDefault();var q=e.target.elements;signInWithEmailAndPassword(au,q.em.value.trim(),q.pw.value).then(function(c){if(c.user.uid!==ADMIN){signOut(au);toast('Compte non autorisé')}else toast('Connecté ✓')}).catch(function(){toast('E-mail ou mot de passe incorrect')})}
 });
 document.addEventListener('change',function(e){
  var f=e.target.files&&e.target.files[0];if(!f)return;
  if(e.target.id==='pf')readImg(f,240,'image/jpeg',function(u){tmpImg=u;var p=$('pp');if(p){p.src=u;p.style.display='block'}});
- else if(e.target.id==='logof')readImg(f,256,'image/png',function(u){S.logo=u;save();renderAll();toast('Logo mis à jour ✓')});
+ else if(e.target.id==='logof')readImg(f,256,'image/png',function(u){wr(setDoc(doc(db,'meta','site'),{logo:u}));toast('Logo mis à jour ✓')});
 });
 setInterval(tick,1000);
 renderAll();
@@ -334,4 +341,3 @@ renderAll();
 </script>
 </body>
 </html>
-
