@@ -95,6 +95,7 @@ input:focus,select:focus{outline:2px solid var(--p2)}
 footer{text-align:center;color:var(--m);padding:20px 16px 40px;border-top:1px solid rgba(168,85,247,.2);font-size:15px}
 footer button{background:none;border:0;color:var(--g);cursor:pointer;font:600 15px Rajdhani,sans-serif;padding:6px 8px}
 .row{display:flex;align-items:center;gap:12px;background:var(--c);border:1px solid rgba(168,85,247,.2);border-radius:14px;padding:10px;margin-bottom:10px}.row .th{width:46px;height:46px;border-radius:10px;overflow:hidden;flex:none}.row .th .av0{font-size:20px}.row .nm{flex:1;min-width:0}.row .nm b{color:#fff}
+.row .th svg{width:100%;height:100%;padding:4px}.row .th img{width:100%;height:100%;object-fit:cover}
 .set{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
 </style>
 </head>
@@ -159,6 +160,7 @@ var DN=['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
 var RANKS=['Bronze','Silver','Gold','Platinum','Diamond','Champion I','Champion II','Champion III','Grand Champion I','Grand Champion II','Grand Champion III','Supersonic Legend'];
 var BT='<div class="fa"><button type="button" class="btn o" data-a="close">Annuler</button><button type="submit" class="btn">Enregistrer</button></div>';
 var PRODS=[{id:'j1',n:'Maillot Domicile',k:'tee',c:'#3b1a78'},{id:'j2',n:'Maillot Extérieur',k:'tee',c:'#e9ddff'},{id:'h1',n:'Hoodie Novarox',k:'tee',c:'#14102a'},{id:'c1',n:'Casquette Snapback',k:'cap',c:'#5b21b6'},{id:'m1',n:'Tapis de souris XL',k:'pad',c:'#2a1750'},{id:'t1',n:'Mug Novarox',k:'mug',c:'#7c3aed'}];
+var PC={tee:'#3b1a78',cap:'#5b21b6',pad:'#2a1750',mug:'#7c3aed'};
 
 function $(i){return document.getElementById(i)}
 function esc(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})}
@@ -175,14 +177,14 @@ function toast(t){var e=$('toast');e.textContent=t;e.classList.add('show');clear
 var CFG={apiKey:"AIzaSyCy5zYkbjhcz35N_YemK91qYP9vVJq-ojw",authDomain:"novarox-d0dfd.firebaseapp.com",projectId:"novarox-d0dfd",storageBucket:"novarox-d0dfd.firebasestorage.app",messagingSenderId:"852740387366",appId:"1:852740387366:web:d15f1e609302c26747ece7"};
 var ADMIN='8nTEby49VgMsEDFuIedsSATne642';
 var fapp=initializeApp(CFG),db=getFirestore(fapp),au=getAuth(fapp);
-S={logo:'',players:[],matches:[],notify:{}};
+S={logo:'',players:[],matches:[],products:[],notify:{}};
 try{S.notify=JSON.parse(localStorage.getItem('nvx_notify')||'{}')}catch(e){}
 function save(){try{localStorage.setItem('nvx_notify',JSON.stringify(S.notify))}catch(e){}}
 function wr(p){return p.catch(function(e){toast(e&&e.code==='permission-denied'?'Accès refusé (règles ou connexion)':'Enregistrement impossible')})}
 function put(c,o){var d={};for(var k in o)if(k!=='id')d[k]=o[k];return wr(setDoc(doc(db,c,o.id),d))}
 function del(c,id){return wr(deleteDoc(doc(db,c,id)))}
 function watch(c,key){onSnapshot(collection(db,c),function(q){S[key]=q.docs.map(function(d){var o=d.data();o.id=d.id;return o});renderAll()},function(){toast('Connexion à la base impossible')})}
-watch('players','players');watch('matches','matches');
+watch('players','players');watch('matches','matches');watch('products','products');
 onSnapshot(doc(db,'meta','site'),function(d){S.logo=d.exists()?(d.data().logo||''):'';renderAll()},function(){});
 onAuthStateChanged(au,function(u){auth=!!u&&u.uid===ADMIN;renderAll()});
 
@@ -245,24 +247,29 @@ function rStats(){
  function ln(l,v){return '<div class="pr"><span>'+l+'</span><b>'+v+'</b></div><div class="bar2"><i style="width:'+Math.round(v/mx*100)+'%"></i></div>'}
  $('ps').innerHTML=S.players.slice().sort(function(a,b){return b.g-a.g}).map(function(p){return '<div class="card"><h3>'+esc(p.name)+'</h3><div class="mu" style="margin-bottom:10px">'+esc(p.rank)+'</div>'+ln('Buts',p.g)+ln('Passes décisives',p.a)+ln('Arrêts',p.s)+'</div>'}).join('')||'<p class="mu">Aucun joueur.</p>';
 }
-function icon(p){
+function icon(p){p.c=p.c||PC[p.k]||'#5b21b6';
  var s='stroke="#a855f7" stroke-width="2"',b=p.k==='tee'?'<path d="M30 12 L8 28 L19 42 L28 36 V88 H72 V36 L81 42 L92 28 L70 12 Q50 28 30 12Z" fill="'+p.c+'" '+s+'/><text x="50" y="62" text-anchor="middle" font-family="Orbitron,Arial" font-weight="900" font-size="18" fill="#a855f7">NR</text>':
  p.k==='cap'?'<path d="M14 62 Q14 24 50 24 Q86 24 86 62Z" fill="'+p.c+'" '+s+'/><path d="M58 62 H96 V70 H58Z" fill="'+p.c+'" '+s+'/>':
  p.k==='mug'?'<rect x="22" y="26" width="46" height="52" rx="6" fill="'+p.c+'" '+s+'/><path d="M68 38 H80 Q86 38 86 46 V56 Q86 64 78 64 H68" fill="none" '+s+'/>':
  '<rect x="8" y="26" width="84" height="48" rx="10" fill="'+p.c+'" '+s+'/><text x="50" y="58" text-anchor="middle" font-family="Orbitron,Arial" font-weight="900" font-size="18" fill="#a855f7">NR</text>';
  return '<svg viewBox="0 0 100 100">'+b+'</svg>';
 }
+function pic(p){return p.img?'<img alt="" src="'+esc(p.img)+'" style="width:100%;height:100%;object-fit:cover;border-radius:12px">':icon(p)}
 function rShop(){
- $('sh').innerHTML=PRODS.map(function(p){var on=S.notify[p.id];return '<div class="card"><div class="ic">'+icon(p)+'</div><h3>'+esc(p.n)+'</h3><p class="mu">Collection Novarox · Bientôt disponible</p><button class="btn'+(on?'':' o')+'" data-a="nt" data-id="'+p.id+'">'+(on?'Alerte activée ✓':'Me prévenir')+'</button></div>'}).join('');
+ var l=S.products.slice().sort(function(a,b){return a.id<b.id?-1:1});
+ $('sh').innerHTML=l.length?l.map(function(p){var on=S.notify[p.id],ok=/^https?:\/\//.test(p.link||'');
+  return '<div class="card"><div class="ic">'+pic(p)+'</div><h3>'+esc(p.name)+'</h3><p class="mu">'+(p.price?esc(p.price):'Bientôt disponible')+'</p>'+(ok?'<a class="btn" style="display:block;text-align:center;text-decoration:none" href="'+esc(p.link)+'" target="_blank" rel="noopener">Acheter</a>':'<button class="btn'+(on?'':' o')+'" data-a="nt" data-id="'+p.id+'">'+(on?'Alerte activée ✓':'Me prévenir')+'</button>')+'</div>'}).join(''):'<p class="mu">La boutique arrive bientôt.</p>';
 }
 function rAdmin(){
  var el=$('ad'),h;
  if(!auth){el.innerHTML='<form id="lf" class="card lgn"><h3 style="margin-bottom:14px">Accès administrateur</h3><label>E-mail<input type="email" name="em" autocomplete="username" required></label><label>Mot de passe<input type="password" name="pw" autocomplete="current-password" required></label><button class="btn" type="submit">Connexion</button></form>';return}
- h='<div class="tabs">'+[['p','Joueurs'],['m','Matchs'],['s','Réglages']].map(function(t){return '<button class="chip'+(adT===t[0]?' on':'')+'" data-a="tab" data-id="'+t[0]+'">'+t[1]+'</button>'}).join('')+'</div>';
+ h='<div class="tabs">'+[['p','Joueurs'],['m','Matchs'],['b','Boutique'],['s','Réglages']].map(function(t){return '<button class="chip'+(adT===t[0]?' on':'')+'" data-a="tab" data-id="'+t[0]+'">'+t[1]+'</button>'}).join('')+'</div>';
  if(adT==='p'){
   h+='<button class="btn" data-a="ap" style="margin-bottom:14px">Ajouter un joueur</button>'+(S.players.map(function(p){return '<div class="row"><div class="th">'+avatar(p)+'</div><div class="nm"><b>'+esc(p.name)+'</b><div class="mu">'+esc(p.rank)+'</div></div><button class="btn s o" data-a="ep" data-id="'+p.id+'">Modifier</button><button class="btn s d" data-a="dp" data-id="'+p.id+'">Suppr.</button></div>'}).join('')||'<p class="mu">Aucun joueur.</p>');
  }else if(adT==='m'){
   h+='<div class="set" style="margin:0 0 14px"><button class="btn" data-a="am">Ajouter un match</button><button class="btn o" data-v="cal">Ouvrir le calendrier</button></div>'+(S.matches.slice().sort(function(a,b){return a.date<b.date?1:-1}).map(function(m){return mrow(m,true)}).join('')||'<p class="mu">Aucun match.</p>');
+ }else if(adT==='b'){
+  h+='<div class="set" style="margin:0 0 14px"><button class="btn" data-a="ab">Ajouter un produit</button>'+(S.products.length?'':'<button class="btn o" data-a="ib">Importer les 6 produits d’exemple</button>')+'</div>'+(S.products.slice().sort(function(a,b){return a.id<b.id?-1:1}).map(function(p){return '<div class="row"><div class="th">'+pic(p)+'</div><div class="nm"><b>'+esc(p.name)+'</b><div class="mu">'+esc(p.price||'Bientôt')+'</div></div><button class="btn s o" data-a="eb" data-id="'+p.id+'">Modifier</button><button class="btn s d" data-a="db" data-id="'+p.id+'">Suppr.</button></div>'}).join('')||'<p class="mu">Aucun produit.</p>');
  }else{
   h+='<div class="card"><h3>Logo de l’équipe</h3><div class="lg" style="width:80px;height:80px;margin:12px 0"></div><label>Importer une image<input type="file" id="logof" accept="image/*"></label><div class="set"><button class="btn s o" data-a="rlogo">Revenir au logo par défaut</button></div></div><div class="card" style="margin-top:14px"><h3>Sécurité et données</h3><div class="set"><button class="btn s d" data-a="reset">Tout effacer</button><button class="btn s" data-a="logout">Se déconnecter</button></div></div>';
  }
@@ -281,6 +288,17 @@ function pForm(id){
   var n=f.elements.name.value.trim();if(!n){toast('Pseudo requis');return false}
   var r={name:n,rank:f.elements.rank.value,role:f.elements.role.value.trim()||'Joueur',img:tmpImg,g:Math.max(0,+f.elements.g.value||0),a:Math.max(0,+f.elements.a.value||0),s:Math.max(0,+f.elements.s.value||0)};
   r.id=p?p.id:uid();put('players',r);toast('Joueur enregistré ✓');
+ });
+}
+function bForm(id){
+ var p=id?find(S.products,id):null;tmpImg=p?(p.img||''):'';
+ var ks=[['tee','Maillot / Hoodie'],['cap','Casquette'],['pad','Tapis de souris'],['mug','Mug']];
+ modal(p?'Modifier le produit':'Ajouter un produit','<label>Nom<input name="name" required maxlength="40" value="'+esc(p?p.name:'')+'"></label><label>Prix (vide = bientôt disponible)<input name="price" maxlength="20" placeholder="39,90 €" value="'+esc(p?p.price:'')+'"></label><label>Lien d’achat (facultatif)<input name="link" type="url" placeholder="https://..." value="'+esc(p?p.link:'')+'"></label><label>Icône si pas de photo<select name="k">'+ks.map(function(x){return '<option value="'+x[0]+'"'+((p?p.k:'tee')===x[0]?' selected':'')+'>'+x[1]+'</option>'}).join('')+'</select></label><label>Photo du produit<input type="file" id="pf" accept="image/*"></label><img class="prv" id="pp" alt="" style="'+(tmpImg?'':'display:none')+'" src="'+esc(tmpImg)+'">'+BT,function(f){
+  var n=f.elements.name.value.trim(),l=f.elements.link.value.trim(),k=f.elements.k.value;
+  if(!n){toast('Nom requis');return false}
+  if(l&&!/^https?:\/\//.test(l)){toast('Le lien doit commencer par https://');return false}
+  put('products',{id:p?p.id:uid(),name:n,price:f.elements.price.value.trim(),link:l,img:tmpImg,k:k,c:(p&&p.k===k&&p.c)?p.c:PC[k]});
+  toast('Produit enregistré ✓');
  });
 }
 function mForm(id,dt){
@@ -312,6 +330,10 @@ function act(a,id,t){
  else if(a==='addday')mForm(null,sel+'T20:00');
  else if(a==='em')mForm(id);
  else if(a==='dm'){var m=find(S.matches,id);if(m)confirmM('Supprimer le match contre '+m.opp+' ?',function(){del('matches',id);toast('Match supprimé')})}
+ else if(a==='ab')bForm();
+ else if(a==='eb')bForm(id);
+ else if(a==='db'){var q=find(S.products,id);if(q)confirmM('Supprimer le produit '+q.name+' ?',function(){del('products',id);toast('Produit supprimé')})}
+ else if(a==='ib'){var t=Date.now();PRODS.forEach(function(x,i){put('products',{id:(t+i).toString(36),name:x.n,price:'',link:'',img:'',k:x.k,c:x.c})});toast('Produits importés ✓')}
  else if(a==='rlogo'){wr(setDoc(doc(db,'meta','site'),{logo:''}));toast('Logo par défaut')}
  else if(a==='reset')confirmM('Effacer tous les joueurs et tous les matchs ? Cette action est définitive.',function(){S.players.forEach(function(x){del('players',x.id)});S.matches.forEach(function(x){del('matches',x.id)});toast('Données effacées')});
 }
